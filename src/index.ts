@@ -9,7 +9,7 @@ const app: Express = express();
 
 const startServer = async () => {
   try {
-    await mongoose.connect(process.env.mongoUrl!);
+    await mongoose.connect(process.env.MONGO_URL!);
 
     app.listen(5000, () => {
       console.log("SERVER STARTED");
