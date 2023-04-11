@@ -62,7 +62,58 @@ class AuthController {
         });
       }
     } catch (err) {
-      res.status(500).json({ message: "Ошибка сервера" });
+      return res.status(500).json({ message: "Ошибка сервера" });
+    }
+  };
+
+  login = async (req: Request, res: Response) => {
+    try {
+      const {
+        emailOrUserName,
+        password,
+      }: {
+        emailOrUserName: string;
+        password: string;
+      } = req.body;
+
+      const user: IUser | null = await UserModel.findOne({
+        $or: [{ email: emailOrUserName }, { userName: emailOrUserName }],
+      });
+
+      if (!user) {
+        return res
+          .status(404)
+          .json({ message: "Не удалось найти пользователя" });
+      }
+
+      if (!password) {
+        return res.status(500).json({ message: "Введите пароль" });
+      }
+
+      const isMatch = bcrypt.compare(password, user.password!);
+
+      if (!isMatch) {
+        return res.status(500).json({ message: "Неверный пароль!" });
+      }
+
+      const token = jwt.sign(
+        { userId: user._id },
+        process.env.SECRET_KEY as string,
+        {
+          expiresIn: "7d",
+        }
+      );
+
+      return res.json({
+        message: "Вход выполнен успешно!",
+        userInfo: {
+          avatar: user.avatar,
+          email: user.email,
+          userName: user.userName,
+        },
+      });
+    } catch (err) {
+      return res.status(500).json({ message: "Ошибка сервера" });
     }
   };
 }
