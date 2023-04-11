@@ -65,10 +65,10 @@ class AuthController {
       return res.status(500).json({
         message: "Пароли не совпадают!",
       });
-    } catch (err: any) {
+    } catch (err) {
       return res
         .status(500)
-        .json({ message: "Ошибка сервера", err: err.message });
+        .json({ message: "Ошибка сервера" });
     }
   };
 
