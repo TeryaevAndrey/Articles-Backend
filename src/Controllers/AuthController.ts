@@ -24,7 +24,7 @@ class AuthController {
       if (candidate) {
         return res
           .status(500)
-          .json({ message: "Такой пользователь уже существует." });
+          .json({ message: "Такой пользователь уже существует" });
       }
 
       if (!password) {
@@ -34,7 +34,7 @@ class AuthController {
       if (password === passwordRepeat) {
         const hashedPassword = await bcrypt.hash(password, 12);
 
-        const user = new UserModel({
+        const user = await new UserModel({
           avatar: "/img/avatar.png",
           email,
           userName,
@@ -61,8 +61,14 @@ class AuthController {
           token,
         });
       }
-    } catch (err) {
-      return res.status(500).json({ message: "Ошибка сервера" });
+
+      return res.status(500).json({
+        message: "Пароли не совпадают!",
+      });
+    } catch (err: any) {
+      return res
+        .status(500)
+        .json({ message: "Ошибка сервера", err: err.message });
     }
   };
 
@@ -111,9 +117,12 @@ class AuthController {
           email: user.email,
           userName: user.userName,
         },
+        token,
       });
     } catch (err) {
       return res.status(500).json({ message: "Ошибка сервера" });
     }
   };
 }
+
+export default AuthController;

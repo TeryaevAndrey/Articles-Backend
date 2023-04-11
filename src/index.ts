@@ -4,8 +4,11 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import mongoose from "mongoose";
+import createRoutes from "./core/routes.js";
 
 const app: Express = express();
+
+createRoutes(app);
 
 const startServer = async () => {
   try {
