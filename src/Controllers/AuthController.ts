@@ -66,9 +66,7 @@ class AuthController {
         message: "Пароли не совпадают!",
       });
     } catch (err) {
-      return res
-        .status(500)
-        .json({ message: "Ошибка сервера" });
+      return res.status(500).json({ message: "Ошибка сервера" });
     }
   };
 
