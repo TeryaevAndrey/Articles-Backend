@@ -18,6 +18,7 @@ const createRoutes = (app: Express) => {
   app.post("/edit-profile", checkAuth, ProfileCtrl.editProfile);
 
   app.post("/add-article", checkAuth, ArticleCtrl.addArticle);
+  app.post("/edit-article/:articleId", checkAuth, ArticleCtrl.editArticle);
 };
 
 export default createRoutes;
