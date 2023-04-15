@@ -80,7 +80,7 @@ class AuthController {
         password: string;
       } = req.body;
 
-      const user: IUser | null = await UserModel.findOne({
+      const user = await UserModel.findOne({
         userName,
       });
 
@@ -94,10 +94,10 @@ class AuthController {
         return res.status(500).json({ message: "Введите пароль" });
       }
 
-      const isMatch = bcrypt.compare(password, user.password!);
+      const isMatch = await bcrypt.compare(password, user.password);
 
       if (!isMatch) {
-        return res.status(500).json({ message: "Неверный пароль!" });
+        return res.status(400).json({ message: "Неверный пароль!" });
       }
 
       const token = jwt.sign(
