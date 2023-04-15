@@ -19,6 +19,7 @@ const createRoutes = (app: Express) => {
 
   app.post("/add-article", checkAuth, ArticleCtrl.addArticle);
   app.post("/edit-article/:articleId", checkAuth, ArticleCtrl.editArticle);
+  app.get("/get-articles", ArticleCtrl.getArticles);
 };
 
 export default createRoutes;

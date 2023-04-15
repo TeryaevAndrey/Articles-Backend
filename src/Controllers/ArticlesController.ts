@@ -59,6 +59,27 @@ class ArticlesController {
       return res.status(500).json({ message: "Ошибка сервера" });
     }
   };
+
+  getArticles = async (req: Request, res: Response) => {
+    try {
+      const limit: number = Number(req.query.limit);
+      const page: number = Number(req.query.page);
+
+      const articles = await ArticleModel.find()
+        .limit(limit)
+        .skip(limit * page);
+
+      const total = await ArticleModel.countDocuments();
+
+      if (articles.length === 0) {
+        return res.status(404).json({ message: "Не удалось ничего найти" });
+      }
+
+      return res.json({ articles, total });
+    } catch (err) {
+      return res.status(500).json({ message: "Ошибка сервера" });
+    }
+  };
 }
 
 export default ArticlesController;
