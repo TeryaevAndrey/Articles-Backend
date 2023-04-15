@@ -1,4 +1,5 @@
 import { Express, urlencoded, json } from "express";
+import cors from "cors";
 import AuthController from "../Controllers/AuthController.js";
 import checkAuth from "../middlewares/checkAuth.js";
 import ArticlesController from "../Controllers/ArticlesController.js";
@@ -11,6 +12,7 @@ const createRoutes = (app: Express) => {
 
   app.use(urlencoded({ extended: false }));
   app.use(json());
+  app.use(cors());
 
   app.post("/auth/reg", AuthCtrl.reg);
   app.post("/auth/login", AuthCtrl.login);

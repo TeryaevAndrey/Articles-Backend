@@ -8,23 +8,25 @@ class AuthController {
   reg = async (req: Request, res: Response) => {
     try {
       const {
-        email,
         userName,
         password,
         passwordRepeat,
       }: {
-        email: string;
         userName: string;
         password: string;
         passwordRepeat: string;
       } = req.body;
 
-      const candidate: IUser | null = await UserModel.findOne({ email });
+      const candidate: IUser | null = await UserModel.findOne({ userName });
 
       if (candidate) {
         return res
           .status(500)
           .json({ message: "Такой пользователь уже существует" });
+      }
+
+      if (!userName) {
+        return res.status(500).json({ message: "Введите имя пользователя!" });
       }
 
       if (!password) {
@@ -36,7 +38,6 @@ class AuthController {
 
         const user = await new UserModel({
           avatar: "/img/avatar.png",
-          email,
           userName,
           password: hashedPassword,
         });
@@ -55,7 +56,6 @@ class AuthController {
           message: "Пользователь создан успешно!",
           userInfo: {
             userId: user._id,
-            email,
             userName,
           },
           token,
@@ -73,15 +73,15 @@ class AuthController {
   login = async (req: Request, res: Response) => {
     try {
       const {
-        emailOrUserName,
+        userName,
         password,
       }: {
-        emailOrUserName: string;
+        userName: string;
         password: string;
       } = req.body;
 
       const user: IUser | null = await UserModel.findOne({
-        $or: [{ email: emailOrUserName }, { userName: emailOrUserName }],
+        userName,
       });
 
       if (!user) {
@@ -112,7 +112,6 @@ class AuthController {
         message: "Вход выполнен успешно!",
         userInfo: {
           avatar: user.avatar,
-          email: user.email,
           userName: user.userName,
         },
         token,
