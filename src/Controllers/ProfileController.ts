@@ -7,24 +7,30 @@ class ProfileController {
   editProfile = async (req: Request, res: Response) => {
     try {
       const {
-        email,
         userName,
         password,
         oldPassword,
       }: {
-        email?: string;
-        userName?: string;
-        password?: string;
-        oldPassword?: string;
+        userName: string;
+        password: string;
+        oldPassword: string;
       } = req.body;
 
       const avatar = req.file;
 
       const user = await UserModel.findOne({ _id: req.userId });
 
-      let avatarFile = null;
+      let avatarPath: string = user.avatar;
       let matchedOldsPasswords: Promise<boolean> | boolean = false;
       let newHashedPassword: string = user.password;
+
+      if (avatar) {
+        const result = await cloudinary.v2.uploader.upload(avatar.path, {
+          folder: "articles-avatars",
+        });
+
+        avatarPath = result.secure_url;
+      }
 
       if (password) {
         newHashedPassword = await bcrypt.hash(password, 12);
@@ -32,31 +38,41 @@ class ProfileController {
 
       if (oldPassword) {
         matchedOldsPasswords = await bcrypt.compare(oldPassword, user.password);
-      } else {
-        return res
-          .status(404)
-          .json({ message: "Введите старый пароль, чтобы его обновить" });
       }
 
-      if (avatar) {
-        avatarFile = await cloudinary.v2.uploader.upload(avatar.path, {
-          folder: "articles-avatars",
-        });
+      if (password && !oldPassword) {
+        return res
+          .status(404)
+          .json({ message: "Введите старый пароль, чтобы обновить" });
       }
+
+      if(password && oldPassword) {
+        if(matchedOldsPasswords === false) {
+          return res.status(500).json({message: "Пароли не совпадают!"});
+        }
+      }
+
+      console.log(
+        avatarPath,
+        userName,
+        matchedOldsPasswords,
+        newHashedPassword
+      );
 
       await UserModel.updateOne(
         { _id: req.userId },
         {
-          avatar: avatar || user.avatar,
-          email: email || user.email,
+          avatar: avatarPath || user.avatar,
           userName: userName || user.userName,
           password: matchedOldsPasswords ? newHashedPassword : user.password,
         }
       );
 
       return res.json({ message: "Данные обновлены" });
-    } catch (err) {
-      return res.status(500).json({ message: "Ошибка сервера" });
+    } catch (err: any) {
+      return res
+        .status(500)
+        .json({ message: "Ошибка сервера", err: err });
     }
   };
 }
