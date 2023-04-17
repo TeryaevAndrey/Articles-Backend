@@ -46,18 +46,11 @@ class ProfileController {
           .json({ message: "Введите старый пароль, чтобы обновить" });
       }
 
-      if(password && oldPassword) {
-        if(matchedOldsPasswords === false) {
-          return res.status(500).json({message: "Пароли не совпадают!"});
+      if (password && oldPassword) {
+        if (matchedOldsPasswords === false) {
+          return res.status(500).json({ message: "Пароли не совпадают!" });
         }
       }
-
-      console.log(
-        avatarPath,
-        userName,
-        matchedOldsPasswords,
-        newHashedPassword
-      );
 
       await UserModel.updateOne(
         { _id: req.userId },
@@ -70,9 +63,29 @@ class ProfileController {
 
       return res.json({ message: "Данные обновлены" });
     } catch (err: any) {
-      return res
+      return res.status(500).json({ message: "Ошибка сервера", err: err });
+    }
+  };
+
+  getMyData = async (req: Request, res: Response) => {
+    try {
+      const user = await UserModel.findOne({ _id: req.userId }).select(
+        "-password"
+      );
+
+      if (!user) {
+        return res
+          .status(404)
+          .json({ message: "Не удалось найти пользователя" });
+      }
+
+      return res.json({ user: user });
+    } catch (err) {
+      res
         .status(500)
-        .json({ message: "Ошибка сервера", err: err });
+        .json({
+          message: "Не удалось получить ваши данные. Перезагрузите страницу",
+        });
     }
   };
 }
