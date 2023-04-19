@@ -26,7 +26,7 @@ class ProfileController {
 
       if (avatar) {
         const result = await cloudinary.v2.uploader.upload(avatar.path, {
-          folder: "articles-avatars",
+          folder: "articles-users-avatars",
         });
 
         avatarPath = result.secure_url;

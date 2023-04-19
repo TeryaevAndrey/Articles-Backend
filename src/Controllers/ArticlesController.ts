@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import ArticleModel from "../models/ArticleModel.js";
+import { cloudinary } from "../utils/cloudinary.js";
 
 class ArticlesController {
   addArticle = async (req: Request, res: Response) => {
@@ -78,6 +79,26 @@ class ArticlesController {
       return res.json({ articles, total });
     } catch (err) {
       return res.status(500).json({ message: "Ошибка сервера" });
+    }
+  };
+
+  imgProcessing = async (req: Request, res: Response) => {
+    try {
+      const img = req.file;
+
+      if (!img) {
+        return res.status(500).json({ message: "Ошибка. Повторите попытку" });
+      }
+
+      const result = await cloudinary.v2.uploader.upload(img.path, {
+        folder: `articles-posts-author:${req.userId}`,
+      });
+
+      return res.json({ img: result.secure_url });
+    } catch (err) {
+      return res.status(500).json({
+        message: "Не удалось обработать изображение. Повторите попытку",
+      });
     }
   };
 }
