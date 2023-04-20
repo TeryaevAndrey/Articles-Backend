@@ -6,18 +6,25 @@ class ArticlesController {
   addArticle = async (req: Request, res: Response) => {
     try {
       const {
+        title,
         elements,
         tags,
       }: {
+        title: string;
         elements: [];
         tags: [];
       } = req.body;
+
+      if(!title) {
+        return res.status(500).json({message: "Введите заголовок!"});
+      }
 
       if (elements.length === 0) {
         return res.status(404).json({ message: "Добавьте элементы!" });
       }
 
       const article = await new ArticleModel({
+        title,
         elements,
         tags,
         from: req.userId,
@@ -34,10 +41,11 @@ class ArticlesController {
   editArticle = async (req: Request, res: Response) => {
     try {
       const {
+        title,
         elements,
         tags,
       }: {
-        id: string;
+        title: string;
         elements: [];
         tags: [];
       } = req.body;
@@ -50,6 +58,7 @@ class ArticlesController {
       await ArticleModel.updateOne(
         { _id: articleId },
         {
+          title,
           elements,
           tags,
         }
