@@ -7,16 +7,18 @@ class ArticlesController {
     try {
       const {
         title,
+        banner,
         elements,
         tags,
       }: {
         title: string;
+        banner: string | undefined;
         elements: [];
         tags: [];
       } = req.body;
 
-      if(!title) {
-        return res.status(500).json({message: "Введите заголовок!"});
+      if (!title) {
+        return res.status(500).json({ message: "Введите заголовок!" });
       }
 
       if (elements.length === 0) {
@@ -25,8 +27,10 @@ class ArticlesController {
 
       const article = await new ArticleModel({
         title,
+        banner,
         elements,
         tags,
+        views: 0,
         from: req.userId,
       });
 
@@ -42,10 +46,12 @@ class ArticlesController {
     try {
       const {
         title,
+        banner,
         elements,
         tags,
       }: {
         title: string;
+        banner: string | undefined;
         elements: [];
         tags: [];
       } = req.body;
@@ -59,6 +65,7 @@ class ArticlesController {
         { _id: articleId },
         {
           title,
+          banner,
           elements,
           tags,
         }
