@@ -121,7 +121,7 @@ class ArticlesController {
 
   getArticle = async (req: Request, res: Response) => {
     try {
-      const { articleId } = req.query;
+      const { articleId } = req.params;
 
       const article = await ArticleModel.findOne({ _id: articleId });
 
