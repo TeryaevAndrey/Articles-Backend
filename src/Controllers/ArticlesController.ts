@@ -123,7 +123,8 @@ class ArticlesController {
     try {
       const { articleId } = req.params;
 
-      const article = await ArticleModel.findOne({ _id: articleId });
+      const article = await ArticleModel.findOne({ _id: articleId })
+        .populate("from", "-password");
 
       if (!article) {
         return res.status(404).json({ message: "Не удалось найти статью" });
