@@ -98,6 +98,45 @@ class ArticlesController {
     }
   };
 
+  getMyArticles = async (req: Request, res: Response) => {
+    try {
+      const limit: number = Number(req.query.limit);
+      const page: number = Number(req.query.page);
+
+      const articles = await ArticleModel.find({ from: req.userId })
+        .limit(limit)
+        .skip(page > 1 ? limit * page : 0);
+
+      const total = await ArticleModel.countDocuments();
+
+      if (articles.length === 0) {
+        return res.status(404).json({ message: "Не удалось ничего найти" });
+      }
+
+      return res.json({ articles, total });
+    } catch (err) {
+      return res.status(500).json({ message: "Не удалось ничего найти" });
+    }
+  };
+
+  getArticle = async (req: Request, res: Response) => {
+    try {
+      const { articleId } = req.query;
+
+      const article = await ArticleModel.findOne({ _id: articleId });
+
+      if (!article) {
+        return res.status(404).json({ message: "Не удалось найти статью" });
+      }
+
+      return res.json({ article });
+    } catch (err) {
+      return res
+        .status(500)
+        .json({ message: "Ошибка. Попробуйте перезагрузить страницу" });
+    }
+  };
+
   imgProcessing = async (req: Request, res: Response) => {
     try {
       const img = req.file;
