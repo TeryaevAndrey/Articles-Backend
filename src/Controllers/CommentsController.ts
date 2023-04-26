@@ -27,11 +27,32 @@ class CommentController {
 
       await comment.save();
 
-      return res.json({ message: "Отзыв отправлен!" });
+      return res.json({ message: "Комментарий отправлен!" });
+    } catch (err) {
+      return res.status(500).json({
+        message: "Не удалось добавить Комментарий. Попробуйте снова.",
+      });
+    }
+  };
+
+  getComments = async (req: Request, res: Response) => {
+    try {
+      const { articleId }: { articleId: string } = req.body;
+
+      const comments = await CommentModel.find({ articleId }).populate(
+        "from",
+        "-password"
+      );
+
+      if (!comments) {
+        return res.status(404).json({ message: "Список комментариев пуст" });
+      }
+
+      return res.json({ comments });
     } catch (err) {
       return res
         .status(500)
-        .json({ message: "Не удалось добавить отзыв. Попробуйте снова." });
+        .json({ message: "Ошибка. Попробуйте перезагрузить страницу" });
     }
   };
 }

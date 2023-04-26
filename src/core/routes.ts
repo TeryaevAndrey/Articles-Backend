@@ -33,6 +33,7 @@ const createRoutes = (app: Express) => {
   app.get("/get-articles", ArticleCtrl.getArticles);
   app.get("/get-my-articles", checkAuth, ArticleCtrl.getMyArticles);
   app.get("/get-article/:articleId", ArticleCtrl.getArticle);
+
   app.post(
     "/img-processing",
     checkAuth,
@@ -41,6 +42,7 @@ const createRoutes = (app: Express) => {
   );
 
   app.post("/add-comment", checkAuth, CommentCtrl.addComment);
+  app.get("/get-comments", CommentCtrl.getComments);
 };
 
 export default createRoutes;
