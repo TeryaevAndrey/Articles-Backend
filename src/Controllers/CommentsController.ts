@@ -23,7 +23,7 @@ class CommentController {
         articleId,
         rating,
         text,
-      });
+      }).populate("from", "-password");
 
       await comment.save();
 
