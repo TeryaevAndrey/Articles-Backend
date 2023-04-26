@@ -42,7 +42,7 @@ const createRoutes = (app: Express) => {
   );
 
   app.post("/add-comment", checkAuth, CommentCtrl.addComment);
-  app.get("/get-comments", CommentCtrl.getComments);
+  app.get("/get-comments/:articleId", CommentCtrl.getComments);
 };
 
 export default createRoutes;

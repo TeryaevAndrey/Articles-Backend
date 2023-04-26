@@ -27,7 +27,7 @@ class CommentController {
 
       await comment.save();
 
-      return res.json({ message: "Комментарий отправлен!" });
+      return res.json({ message: "Комментарий отправлен!", comment });
     } catch (err) {
       return res.status(500).json({
         message: "Не удалось добавить Комментарий. Попробуйте снова.",
@@ -37,12 +37,12 @@ class CommentController {
 
   getComments = async (req: Request, res: Response) => {
     try {
-      const { articleId }: { articleId: string } = req.body;
+      const { articleId } = req.params;
 
       const comments = await CommentModel.find({ articleId }).populate(
         "from",
         "-password"
-      );
+      ).sort({createdAt: -1});
 
       if (!comments) {
         return res.status(404).json({ message: "Список комментариев пуст" });
