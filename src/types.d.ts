@@ -9,3 +9,11 @@ interface IUser {
   userName: string;
   password?: string;
 }
+
+interface IComment {
+  _id: ObjectId;
+  from: ObjectId;
+  articleId: ObjectId;
+  rating: number;
+  text?: string;
+}
