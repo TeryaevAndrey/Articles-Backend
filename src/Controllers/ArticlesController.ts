@@ -82,9 +82,9 @@ class ArticlesController {
       const limit: number = Number(req.query.limit);
       const page: number = Number(req.query.page);
 
-      const articles = await ArticleModel.find()
+      const articles = await ArticleModel.find().sort({createdAt: -1})
         .limit(limit)
-        .skip(limit * page);
+        .skip(page > 1 ? limit * page - limit : 0);
 
       const total = await ArticleModel.countDocuments();
 
@@ -103,11 +103,16 @@ class ArticlesController {
       const limit: number = Number(req.query.limit);
       const page: number = Number(req.query.page);
 
-      const articles = await ArticleModel.find({ from: req.userId })
+      const articles = await ArticleModel.find(
+        { from: req.userId },
+      )
+      .sort({createdAt: -1})
         .limit(limit)
         .skip(page > 1 ? limit * page : 0);
 
-      const total = await ArticleModel.countDocuments();
+      const total = await ArticleModel.find({
+        from: req.userId,
+      }).countDocuments();
 
       if (articles.length === 0) {
         return res.status(404).json({ message: "Не удалось ничего найти" });
@@ -123,8 +128,10 @@ class ArticlesController {
     try {
       const { articleId } = req.params;
 
-      const article = await ArticleModel.findOne({ _id: articleId })
-        .populate("from", "-password");
+      const article = await ArticleModel.findOne({ _id: articleId }).populate(
+        "from",
+        "-password"
+      );
 
       if (!article) {
         return res.status(404).json({ message: "Не удалось найти статью" });
