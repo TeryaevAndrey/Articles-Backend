@@ -5,11 +5,13 @@ import checkAuth from "../middlewares/checkAuth.js";
 import ArticlesController from "../Controllers/ArticlesController.js";
 import ProfileController from "../Controllers/ProfileController.js";
 import { multerUploads } from "../utils/multer.js";
+import CommentController from "../Controllers/CommentsController.js";
 
 const createRoutes = (app: Express) => {
   const AuthCtrl = new AuthController();
   const ProfileCtrl = new ProfileController();
   const ArticleCtrl = new ArticlesController();
+  const CommentCtrl = new CommentController();
 
   app.use(urlencoded({ extended: false }));
   app.use(json());
@@ -37,6 +39,8 @@ const createRoutes = (app: Express) => {
     multerUploads.single("img"),
     ArticleCtrl.imgProcessing
   );
+
+  app.post("/add-comment", checkAuth, CommentCtrl.addComment);
 };
 
 export default createRoutes;
