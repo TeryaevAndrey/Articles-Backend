@@ -4,14 +4,14 @@ import FavouriteModel from "../models/FavouriteModel.js";
 class FavouriteController {
   addArticleToFavourite = async (req: Request, res: Response) => {
     try {
-      const { userId, articleId }: { userId: string; articleId: string } =
+      const { articleId }: { articleId: string } =
         req.body;
 
-      if (!userId || !articleId) {
+      if (!articleId) {
         return res.status(500).json({ message: "Ошибка" });
       }
 
-      const favouriteArticle = await new FavouriteModel({ userId, articleId });
+      const favouriteArticle = await new FavouriteModel({ userId: req.userId, articleId });
 
       await favouriteArticle.save();
 
