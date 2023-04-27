@@ -82,7 +82,8 @@ class ArticlesController {
       const limit: number = Number(req.query.limit);
       const page: number = Number(req.query.page);
 
-      const articles = await ArticleModel.find().sort({createdAt: -1})
+      const articles = await ArticleModel.find()
+        .sort({ createdAt: -1 })
         .limit(limit)
         .skip(page > 1 ? limit * page - limit : 0);
 
@@ -103,10 +104,8 @@ class ArticlesController {
       const limit: number = Number(req.query.limit);
       const page: number = Number(req.query.page);
 
-      const articles = await ArticleModel.find(
-        { from: req.userId },
-      )
-      .sort({createdAt: -1})
+      const articles = await ArticleModel.find({ from: req.userId })
+        .sort({ createdAt: -1 })
         .limit(limit)
         .skip(page > 1 ? limit * page : 0);
 
@@ -136,6 +135,8 @@ class ArticlesController {
       if (!article) {
         return res.status(404).json({ message: "Не удалось найти статью" });
       }
+
+      await ArticleModel.updateOne({_id: articleId}, {views: article.views + 1});
 
       return res.json({ article });
     } catch (err) {
