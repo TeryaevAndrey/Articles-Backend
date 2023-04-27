@@ -6,12 +6,14 @@ import ArticlesController from "../Controllers/ArticlesController.js";
 import ProfileController from "../Controllers/ProfileController.js";
 import { multerUploads } from "../utils/multer.js";
 import CommentController from "../Controllers/CommentsController.js";
+import FavouriteController from "../Controllers/FavouritesController.js";
 
 const createRoutes = (app: Express) => {
   const AuthCtrl = new AuthController();
   const ProfileCtrl = new ProfileController();
   const ArticleCtrl = new ArticlesController();
   const CommentCtrl = new CommentController();
+  const FavouriteCtrl = new FavouriteController();
 
   app.use(urlencoded({ extended: false }));
   app.use(json());
@@ -43,6 +45,13 @@ const createRoutes = (app: Express) => {
 
   app.post("/add-comment", checkAuth, CommentCtrl.addComment);
   app.get("/get-comments/:articleId", CommentCtrl.getComments);
+
+  app.post("/add-to-favourite", checkAuth, FavouriteCtrl.addArticleToFavourite);
+  app.get(
+    "/get-my-favourite-articles",
+    checkAuth,
+    FavouriteCtrl.getFavouriteArticles
+  );
 };
 
 export default createRoutes;

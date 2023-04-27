@@ -17,3 +17,9 @@ interface IComment {
   rating: number;
   text?: string;
 }
+
+interface IFavourite {
+  _id: ObjectId,
+  userId: ObjectId, 
+  articleId: ObjectId
+}
