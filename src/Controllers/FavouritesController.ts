@@ -10,16 +10,16 @@ class FavouriteController {
         return res.status(500).json({ message: "Ошибка" });
       }
 
-      const favouriteArticle = await new FavouriteModel({
+      const favourite = await new FavouriteModel({
         userId: req.userId,
         articleId,
       });
 
-      await favouriteArticle.save();
+      await favourite.save();
 
       return res.json({
         message: "Статья добавлена в избранное",
-        favouriteArticle: favouriteArticle,
+        favourite,
       });
     } catch (err) {
       return res.status(500).json({ message: "Ошибка сервера" });
@@ -46,26 +46,24 @@ class FavouriteController {
 
   getFavouriteArticle = async (req: Request, res: Response) => {
     try {
-      const {articleId} = req.params;
+      const { articleId } = req.params;
 
-      const article = await FavouriteModel.findOne({
+      const favourite = await FavouriteModel.findOne({
         userId: req.userId,
-        articleId 
+        articleId,
       });
 
-      if (!article) {
+      if (!favourite) {
         return res.status(404).json({
           message: "У вас нет этой статьи в избранном",
         });
       }
 
-      return res.json({ article });
+      return res.json({ favourite });
     } catch (err) {
-      return res
-        .status(500)
-        .json({
-          message: "Не получилось получить ваши избранные статьи",
-        });
+      return res.status(500).json({
+        message: "Не получилось получить ваши избранные статьи",
+      });
     }
   };
 }
