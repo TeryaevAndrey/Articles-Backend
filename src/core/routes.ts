@@ -48,10 +48,11 @@ const createRoutes = (app: Express) => {
 
   app.post("/add-to-favourite", checkAuth, FavouriteCtrl.addArticleToFavourite);
   app.get(
-    "/get-my-favourite-articles",
+    "/get-favourite-article/:articleId",
     checkAuth,
-    FavouriteCtrl.getFavouriteArticles
+    FavouriteCtrl.getFavouriteArticle
   );
+  app.post("/delete-from-favourite", checkAuth, FavouriteCtrl.deleteArticleFromFavourite)
 };
 
 export default createRoutes;
