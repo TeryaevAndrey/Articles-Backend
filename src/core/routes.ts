@@ -52,7 +52,16 @@ const createRoutes = (app: Express) => {
     checkAuth,
     FavouriteCtrl.getFavouriteArticle
   );
-  app.post("/delete-from-favourite", checkAuth, FavouriteCtrl.deleteArticleFromFavourite)
+  app.get(
+    "/get-favourite-articles",
+    checkAuth,
+    FavouriteCtrl.getFavouriteArticles
+  );
+  app.post(
+    "/delete-from-favourite",
+    checkAuth,
+    FavouriteCtrl.deleteArticleFromFavourite
+  );
 };
 
 export default createRoutes;

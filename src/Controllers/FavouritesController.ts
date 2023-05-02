@@ -66,6 +66,33 @@ class FavouriteController {
       });
     }
   };
+
+  getFavouriteArticles = async (req: Request, res: Response) => {
+    try {
+      const limit: number = Number(req.query.limit);
+      const page: number = Number(req.query.page);
+
+      const favourite = await FavouriteModel.find({ userId: req.userId })
+        .populate("articleId")
+        .sort({ createdAt: -1 })
+        .limit(limit)
+        .skip(page > 1 ? limit * page - limit : 0);
+
+      const total = await FavouriteModel.find({userId: req.userId}).countDocuments();
+
+      if (total === 0) {
+        return res
+          .status(404)
+          .json({ message: "У вас нет статей в избранном" });
+      }
+
+      return res.json({ favourite, total });
+    } catch (err) {
+      return res
+        .status(500)
+        .json({ message: "Не удалось найти ваши статьи в избранном" });
+    }
+  };
 }
 
 export default FavouriteController;
