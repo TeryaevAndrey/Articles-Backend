@@ -19,7 +19,7 @@ interface IComment {
 }
 
 interface IFavourite {
-  _id: ObjectId,
-  userId: ObjectId, 
-  articleId: ObjectId
+  _id: ObjectId;
+  userId: ObjectId;
+  articleId: ObjectId;
 }

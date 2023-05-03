@@ -136,7 +136,10 @@ class ArticlesController {
         return res.status(404).json({ message: "Не удалось найти статью" });
       }
 
-      await ArticleModel.updateOne({_id: articleId}, {views: article.views + 1});
+      await ArticleModel.updateOne(
+        { _id: articleId },
+        { views: article.views + 1 }
+      );
 
       return res.json({ article });
     } catch (err) {
@@ -163,6 +166,23 @@ class ArticlesController {
       return res.status(500).json({
         message: "Не удалось обработать изображение. Повторите попытку",
       });
+    }
+  };
+
+  getPopularTags = async (req: Request, res: Response) => {
+    try {
+      const tags = await ArticleModel.aggregate([
+        { $unwind: "$tags" },
+        { $group: { _id: "$tags" } },
+        { $sort: { count: -1 } },
+        { $limit: 8 },
+      ]);
+
+      return res.json({ tags });
+    } catch (err) {
+      return res
+        .status(500)
+        .json({ message: "Не получилось получить популярные темы" });
     }
   };
 }

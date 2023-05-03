@@ -62,6 +62,8 @@ const createRoutes = (app: Express) => {
     checkAuth,
     FavouriteCtrl.deleteArticleFromFavourite
   );
+
+  app.get("/get-popular-tags", ArticleCtrl.getPopularTags);
 };
 
 export default createRoutes;
