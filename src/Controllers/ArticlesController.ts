@@ -97,12 +97,16 @@ class ArticlesController {
 
         return res.json({ articles, total });
       } else {
-        const articles = await ArticleModel.find({tags: {$elemMatch: {$eq: tag}}})
+        const articles = await ArticleModel.find({
+          tags: { $elemMatch: { $eq: tag } },
+        })
           .sort({ createdAt: -1 })
           .limit(limit)
           .skip(page > 1 ? limit * page - limit : 0);
 
-        const total = await ArticleModel.find({tags: {$elemMatch: {$eq: tag}}}).countDocuments();
+        const total = await ArticleModel.find({
+          tags: { $elemMatch: { $eq: tag } },
+        }).countDocuments();
 
         if (articles.length === 0) {
           return res.status(404).json({ message: "Не удалось ничего найти" });
@@ -136,6 +140,33 @@ class ArticlesController {
       return res.json({ articles, total });
     } catch (err) {
       return res.status(500).json({ message: "Не удалось ничего найти" });
+    }
+  };
+
+  getArticlesBySearch = async (req: Request, res: Response) => {
+    try {
+      const limit: number = Number(req.query.limit);
+      const page: number = Number(req.query.page);
+      const searchValue = req.query.q;
+
+      const articles = await ArticleModel.find({
+        title: { $regex: searchValue, $options: "i" },
+      })
+        .sort({ createdAt: -1 })
+        .limit(limit)
+        .skip(page > 1 ? limit * page : 0);
+
+      if (!articles) {
+        return res.status(404).json({ message: "Не удалось найти статьи" });
+      }
+
+      const total = await ArticleModel.find({
+        title: { $regex: searchValue, $options: "i" },
+      }).countDocuments();
+
+      return res.json({ articles, total });
+    } catch (err) {
+      return res.status(500).json({ message: "Ошибка. Попробуйте еще раз" });
     }
   };
 

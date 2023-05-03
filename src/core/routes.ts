@@ -34,6 +34,7 @@ const createRoutes = (app: Express) => {
   app.post("/edit-article/:articleId", checkAuth, ArticleCtrl.editArticle);
   app.get("/get-articles", ArticleCtrl.getArticles);
   app.get("/get-my-articles", checkAuth, ArticleCtrl.getMyArticles);
+  app.get("/get-articles-by-search", ArticleCtrl.getArticlesBySearch);
   app.get("/get-article/:articleId", ArticleCtrl.getArticle);
 
   app.post(
