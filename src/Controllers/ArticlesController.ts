@@ -102,7 +102,7 @@ class ArticlesController {
           .limit(limit)
           .skip(page > 1 ? limit * page - limit : 0);
 
-        const total = await ArticleModel.countDocuments();
+        const total = await ArticleModel.find({tags: {$elemMatch: {$eq: tag}}}).countDocuments();
 
         if (articles.length === 0) {
           return res.status(404).json({ message: "Не удалось ничего найти" });
