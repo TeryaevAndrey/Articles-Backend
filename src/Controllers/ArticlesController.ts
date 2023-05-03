@@ -81,19 +81,35 @@ class ArticlesController {
     try {
       const limit: number = Number(req.query.limit);
       const page: number = Number(req.query.page);
+      const tag = req.query.tag;
 
-      const articles = await ArticleModel.find()
-        .sort({ createdAt: -1 })
-        .limit(limit)
-        .skip(page > 1 ? limit * page - limit : 0);
+      if (!tag) {
+        const articles = await ArticleModel.find()
+          .sort({ createdAt: -1 })
+          .limit(limit)
+          .skip(page > 1 ? limit * page - limit : 0);
 
-      const total = await ArticleModel.countDocuments();
+        const total = await ArticleModel.countDocuments();
 
-      if (articles.length === 0) {
-        return res.status(404).json({ message: "Не удалось ничего найти" });
+        if (articles.length === 0) {
+          return res.status(404).json({ message: "Не удалось ничего найти" });
+        }
+
+        return res.json({ articles, total });
+      } else {
+        const articles = await ArticleModel.find({tags: {$elemMatch: {$eq: tag}}})
+          .sort({ createdAt: -1 })
+          .limit(limit)
+          .skip(page > 1 ? limit * page - limit : 0);
+
+        const total = await ArticleModel.countDocuments();
+
+        if (articles.length === 0) {
+          return res.status(404).json({ message: "Не удалось ничего найти" });
+        }
+
+        return res.json({ articles, total });
       }
-
-      return res.json({ articles, total });
     } catch (err) {
       return res.status(500).json({ message: "Ошибка сервера" });
     }
