@@ -102,7 +102,7 @@ class ArticlesController {
         })
           .sort({ createdAt: -1 })
           .limit(limit)
-          .skip(page > 1 ? limit * page - limit : 0);
+          .skip(page > 1 ? (limit * page) - limit : 0);
 
         const total = await ArticleModel.find({
           tags: { $elemMatch: { $eq: tag } },
@@ -127,7 +127,7 @@ class ArticlesController {
       const articles = await ArticleModel.find({ from: req.userId })
         .sort({ createdAt: -1 })
         .limit(limit)
-        .skip(page > 1 ? limit * page : 0);
+        .skip(page > 1 ? (limit * page) - limit : 0);
 
       const total = await ArticleModel.find({
         from: req.userId,
@@ -154,7 +154,7 @@ class ArticlesController {
       })
         .sort({ createdAt: -1 })
         .limit(limit)
-        .skip(page > 1 ? limit * page : 0);
+        .skip(page > 1 ? (limit * page) - limit : 0);
 
       if (!articles) {
         return res.status(404).json({ message: "Не удалось найти статьи" });
