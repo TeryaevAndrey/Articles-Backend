@@ -102,7 +102,7 @@ class ArticlesController {
         })
           .sort({ createdAt: -1 })
           .limit(limit)
-          .skip(page > 1 ? (limit * page) - limit : 0);
+          .skip(page > 1 ? limit * page - limit : 0);
 
         const total = await ArticleModel.find({
           tags: { $elemMatch: { $eq: tag } },
@@ -127,7 +127,7 @@ class ArticlesController {
       const articles = await ArticleModel.find({ from: req.userId })
         .sort({ createdAt: -1 })
         .limit(limit)
-        .skip(page > 1 ? (limit * page) - limit : 0);
+        .skip(page > 1 ? limit * page - limit : 0);
 
       const total = await ArticleModel.find({
         from: req.userId,
@@ -148,23 +148,45 @@ class ArticlesController {
       const limit: number = Number(req.query.limit);
       const page: number = Number(req.query.page);
       const searchValue = req.query.q;
+      const tag = req.query.tag;
 
-      const articles = await ArticleModel.find({
-        title: { $regex: searchValue, $options: "i" },
-      })
-        .sort({ createdAt: -1 })
-        .limit(limit)
-        .skip(page > 1 ? (limit * page) - limit : 0);
+      if (tag) {
+        const articles = await ArticleModel.find({
+          title: { $regex: searchValue, $options: "i" },
+          tags: { $elemMatch: { $eq: tag } },
+        })
+          .sort({ createdAt: -1 })
+          .limit(limit)
+          .skip(page > 1 ? limit * page - limit : 0);
 
-      if (!articles) {
-        return res.status(404).json({ message: "Не удалось найти статьи" });
+        if (!articles) {
+          return res.status(404).json({ message: "Не удалось найти статьи" });
+        }
+
+        const total = await ArticleModel.find({
+          title: { $regex: searchValue, $options: "i" },
+          tags: { $elemMatch: { $eq: tag } },
+        }).countDocuments();
+
+        return res.json({ articles, total });
+      } else {
+        const articles = await ArticleModel.find({
+          title: { $regex: searchValue, $options: "i" },
+        })
+          .sort({ createdAt: -1 })
+          .limit(limit)
+          .skip(page > 1 ? limit * page - limit : 0);
+
+        if (!articles) {
+          return res.status(404).json({ message: "Не удалось найти статьи" });
+        }
+
+        const total = await ArticleModel.find({
+          title: { $regex: searchValue, $options: "i" },
+        }).countDocuments();
+
+        return res.json({ articles, total });
       }
-
-      const total = await ArticleModel.find({
-        title: { $regex: searchValue, $options: "i" },
-      }).countDocuments();
-
-      return res.json({ articles, total });
     } catch (err) {
       return res.status(500).json({ message: "Ошибка. Попробуйте еще раз" });
     }
