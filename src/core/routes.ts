@@ -7,6 +7,7 @@ import ProfileController from "../Controllers/ProfileController.js";
 import { multerUploads } from "../utils/multer.js";
 import CommentController from "../Controllers/CommentsController.js";
 import FavouriteController from "../Controllers/FavouritesController.js";
+import FilesController from "../Controllers/FilesController.js";
 
 const createRoutes = (app: Express) => {
   const AuthCtrl = new AuthController();
@@ -14,6 +15,7 @@ const createRoutes = (app: Express) => {
   const ArticleCtrl = new ArticlesController();
   const CommentCtrl = new CommentController();
   const FavouriteCtrl = new FavouriteController();
+  const FilesCtrl = new FilesController();
 
   app.use(urlencoded({ extended: false }));
   app.use(json());
@@ -41,8 +43,9 @@ const createRoutes = (app: Express) => {
     "/img-processing",
     checkAuth,
     multerUploads.single("img"),
-    ArticleCtrl.imgProcessing
+    FilesCtrl.imgProcessing
   );
+  app.post("/delete-img", checkAuth, FilesCtrl.deleteImg);
 
   app.post("/add-comment", checkAuth, CommentCtrl.addComment);
   app.get("/get-comments/:articleId", CommentCtrl.getComments);
