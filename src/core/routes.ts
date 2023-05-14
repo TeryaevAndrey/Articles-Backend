@@ -50,7 +50,7 @@ const createRoutes = (app: Express) => {
     multerUploads.single("img"),
     FilesCtrl.imgProcessing
   );
-  app.post("/delete-img", checkAuth, FilesCtrl.deleteImg);
+  app.delete("/delete-img/:imgUrl", checkAuth, FilesCtrl.deleteImg);
 
   app.post("/add-comment", checkAuth, CommentCtrl.addComment);
   app.get("/get-comments/:articleId", CommentCtrl.getComments);

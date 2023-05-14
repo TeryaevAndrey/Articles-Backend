@@ -25,7 +25,7 @@ class FilesController {
 
   deleteImg = async (req: Request, res: Response) => {
     try {
-      const { imgUrl } = req.body;
+      const { imgUrl } = req.params;
       const publicId = extractPublicId(imgUrl);
 
       await cloudinary.v2.uploader.destroy(publicId);
