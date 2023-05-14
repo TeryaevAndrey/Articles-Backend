@@ -218,6 +218,26 @@ class ArticlesController {
     }
   };
 
+  deleteArticle = async (req: Request, res: Response) => {
+    try {
+      const { articleId } = req.params;
+
+      const article = ArticleModel.findOne({ _id: articleId });
+
+      if (!article) {
+        return res
+          .status(404)
+          .json({ message: "Такого Id статьи не существует" });
+      }
+
+      return res.json({ message: "Статья удалена" });
+    } catch (err) {
+      return res
+        .status(500)
+        .json({ message: "Ошибка сервера. Попробуйте снова" });
+    }
+  };
+
   getPopularTags = async (req: Request, res: Response) => {
     try {
       const tags = await ArticleModel.aggregate([
