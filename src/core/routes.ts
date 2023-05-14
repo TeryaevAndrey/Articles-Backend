@@ -49,6 +49,7 @@ const createRoutes = (app: Express) => {
 
   app.post("/add-comment", checkAuth, CommentCtrl.addComment);
   app.get("/get-comments/:articleId", CommentCtrl.getComments);
+  app.delete("/delete-comment/:commentId", CommentCtrl.deleteComments);
 
   app.post("/add-to-favourite", checkAuth, FavouriteCtrl.addArticleToFavourite);
   app.get(

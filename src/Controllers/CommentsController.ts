@@ -39,10 +39,9 @@ class CommentController {
     try {
       const { articleId } = req.params;
 
-      const comments = await CommentModel.find({ articleId }).populate(
-        "from",
-        "-password"
-      ).sort({createdAt: -1});
+      const comments = await CommentModel.find({ articleId })
+        .populate("from", "-password")
+        .sort({ createdAt: -1 });
 
       if (!comments) {
         return res.status(404).json({ message: "Список комментариев пуст" });
@@ -53,6 +52,18 @@ class CommentController {
       return res
         .status(500)
         .json({ message: "Ошибка. Попробуйте перезагрузить страницу" });
+    }
+  };
+
+  deleteComments = async (req: Request, res: Response) => {
+    try {
+      const { commentId } = req.params;
+
+      await CommentModel.deleteOne({ _id: commentId });
+
+      return res.json({ message: "Комментарий удален" });
+    } catch (err) {
+      return res.status(500).json({ message: "Ошибка сервера" });
     }
   };
 }
