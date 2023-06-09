@@ -50,7 +50,7 @@ const createRoutes = (app: Express) => {
     multerUploads.single("img"),
     FilesCtrl.imgProcessing
   );
-  app.delete("/delete-img/:imgUrl", checkAuth, FilesCtrl.deleteImg);
+  app.post("/delete-img", checkAuth, FilesCtrl.deleteImg);
 
   app.post("/add-comment", checkAuth, CommentCtrl.addComment);
   app.get("/get-comments/:articleId", CommentCtrl.getComments);
@@ -63,9 +63,14 @@ const createRoutes = (app: Express) => {
     FavouriteCtrl.getFavouriteArticle
   );
   app.get(
-    "/get-favourite-articles",
+    "/get-all-favourites-articles",
     checkAuth,
-    FavouriteCtrl.getFavouriteArticles
+    FavouriteCtrl.getAllFavouritesArticles
+  );
+  app.get(
+    "/get-favourites-articles",
+    checkAuth,
+    FavouriteCtrl.getFavouritesArticles
   );
   app.post(
     "/delete-from-favourite",

@@ -67,7 +67,27 @@ class FavouriteController {
     }
   };
 
-  getFavouriteArticles = async (req: Request, res: Response) => {
+  getAllFavouritesArticles = async (req: Request, res: Response) => {
+    try {
+      const favourites = await FavouriteModel.find({ userId: req.userId });
+
+      const total = await FavouriteModel.find({
+        userId: req.userId,
+      }).countDocuments();
+
+      if (total === 0) {
+        return res
+          .status(200)
+          .json({ message: "У вас нет статей в избранном" });
+      }
+
+      return res.json({ favourites, total });
+    } catch (err) {
+      return res.status(500).json({ message: "Ошибка сервера" });
+    }
+  };
+
+  getFavouritesArticles = async (req: Request, res: Response) => {
     try {
       const limit: number = Number(req.query.limit);
       const page: number = Number(req.query.page);
@@ -78,11 +98,13 @@ class FavouriteController {
         .limit(limit)
         .skip(page > 1 ? limit * page - limit : 0);
 
-      const total = await FavouriteModel.find({userId: req.userId}).countDocuments();
+      const total = await FavouriteModel.find({
+        userId: req.userId,
+      }).countDocuments();
 
       if (total === 0) {
         return res
-          .status(404)
+          .status(200)
           .json({ message: "У вас нет статей в избранном" });
       }
 
