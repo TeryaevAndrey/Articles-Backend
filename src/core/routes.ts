@@ -40,7 +40,6 @@ const createRoutes = (app: Express) => {
   app.get("/get-article/:articleId", ArticleCtrl.getArticle);
   app.delete(
     "/delete-article/:articleId",
-    checkAuth,
     ArticleCtrl.deleteArticle
   );
 

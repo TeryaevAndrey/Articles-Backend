@@ -222,7 +222,7 @@ class ArticlesController {
     try {
       const { articleId } = req.params;
 
-      const article = ArticleModel.findOne({ _id: articleId });
+      const article = await ArticleModel.findOneAndDelete({ _id: articleId });
 
       if (!article) {
         return res
