@@ -52,16 +52,17 @@ class ProfileController {
         }
       }
 
-      await UserModel.updateOne(
+      const updatedUser = await UserModel.findOneAndUpdate(
         { _id: req.userId },
         {
           avatar: avatarPath || user.avatar,
           userName: userName || user.userName,
           password: matchedOldsPasswords ? newHashedPassword : user.password,
-        }
+        },
+        { new: true }
       );
 
-      return res.json({ message: "Данные обновлены" });
+      return res.json({ message: "Данные обновлены", user: updatedUser });
     } catch (err: any) {
       return res.status(500).json({ message: "Ошибка сервера", err: err });
     }
@@ -81,11 +82,9 @@ class ProfileController {
 
       return res.json({ user: user });
     } catch (err) {
-      res
-        .status(500)
-        .json({
-          message: "Не удалось получить ваши данные. Перезагрузите страницу",
-        });
+      res.status(500).json({
+        message: "Не удалось получить ваши данные. Перезагрузите страницу",
+      });
     }
   };
 }

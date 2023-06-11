@@ -38,10 +38,7 @@ const createRoutes = (app: Express) => {
   app.get("/get-my-articles", checkAuth, ArticleCtrl.getMyArticles);
   app.get("/get-articles-by-search", ArticleCtrl.getArticlesBySearch);
   app.get("/get-article/:articleId", ArticleCtrl.getArticle);
-  app.delete(
-    "/delete-article/:articleId",
-    ArticleCtrl.deleteArticle
-  );
+  app.delete("/delete-article/:articleId", ArticleCtrl.deleteArticle);
 
   app.post(
     "/img-processing",
